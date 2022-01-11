@@ -1,7 +1,7 @@
 print("weapon_splode - init.lua");
 
-SWEP.Instructions="";
-SWEP.PrintName="Suck my NADS";
+SWEP.Instructions="Click to kill.";
+SWEP.PrintName="Splode";
 SWEP.Author="";
 SWEP.Purpose="";
 SWEP.Contact="";
@@ -30,34 +30,6 @@ SWEP.Secondary.Ammo="none";
 SWEP.Primary.Radius=500;
 SWEP.Primary.Damage=100;
 
-SWEP.should_draw_dong=false;
-SWEP.dong_text= "( . )( . )";
-
-SWEP.dong_color=Color(255,0,0,255);
-SWEP.dong_delay=10;
-SWEP.dong_index=1;
-SWEP.dong_font="dong_font1";
-
-local sin=math.sin;
-local curtime=CurTime;
-local draw_text=draw.SimpleText;
-local abs=math.abs;
-local floor=math.floor;
-local get_text_size=surface.GetTextSize;
-
-if CLIENT then
-
-	for i=1,100 do
-		surface.CreateFont("dong_font"..i,
-		{
-			font="Arial",
-			size=i,
-			weight=500,
-			antialias=true
-		});
-	end
-end
-
 function SWEP:Initialize()
 	self:SetHoldType("rpg");
 end
@@ -68,17 +40,6 @@ end
 
 function SWEP:Holster()
 	return true;
-end
-
-function SWEP:DrawHUD()
-	if SERVER then return; end
-	local scrw,scrh=ScrW(),ScrH();
-	local sz=floor(sin(curtime())*100);
-	if sz<1 then sz=-sz; end
-	if sz==0 then sz=1; end
-	local txtw,txth=get_text_size(self.dong_text);
-	local x,y=scrw/2-txtw/2,scrh/2-txth/2;
-	draw_text(self.dong_text,"dong_font"..sz,x,y,self.dong_color);
 end
 
 function SWEP:PrimaryAttack()
