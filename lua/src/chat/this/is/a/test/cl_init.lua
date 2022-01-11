@@ -1,0 +1,1 @@
+print("src/chat/this/is/a/test/cl_init.lua");
