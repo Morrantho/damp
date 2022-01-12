@@ -1,3 +1,0 @@
-Forgot to include shared files somehow.
-Excluded src/util/sh_init.lua from being resent and reincluded.
-Simplified Auto-Loader. Files are processed all at once.
