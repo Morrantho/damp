@@ -4,7 +4,7 @@ cmd.role="root";
 
 function cmd.run(pl,args)
 	local cache=damp_cache_get_all();
-	local col=damp_color_get_by_key("cl");
+	local col=damp_color_get("cl");
 	damp_util_log_table(cache,col);
 end
 

@@ -1,6 +1,12 @@
 local hook_add=hook.Add;
 local hook_call=hook.Call;
 local stamp=util.DateStamp;
+local net_rcv=net.Receive;
+local net_str=util.AddNetworkString;
+local net_rstr=net.ReadString;
+local ply_by_sid=player.GetBySteamID;
+
+net_str("damp_player_first_tick");
 
 function damp_player_new(pl)
 	local default_admins=damp_cfg_get("default_admins");
@@ -18,7 +24,7 @@ end
 
 function damp_player_load(pl,data)
 	damp_cache_init(pl:SteamID(),data);
-	damp_net_send(pl,nil,"role",data.role);--Broadcast
+	-- damp_net_init(pl,data);
 end
 
 function damp_player_init(pl)
@@ -39,3 +45,11 @@ function damp_player_initial_spawn(pl)
 	damp_player_init(pl);
 end
 hook_add("PlayerInitialSpawn","damp_player_initial_spawn",damp_player_initial_spawn);
+
+function damp_player_first_tick()
+	local sid=net_rstr();
+	local pl=ply_by_sid(sid);
+	local data=damp_cache_get(sid);
+	damp_net_init(pl,data);
+end
+net_rcv("damp_player_first_tick",damp_player_first_tick);

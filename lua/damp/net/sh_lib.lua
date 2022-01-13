@@ -9,6 +9,9 @@ local ply_by_sid=player.GetBySteamID;
 local net_sends={[false]=net.Send,[true]=net.SendToServer};
 local net_send=net_sends[DAMP_REALM];
 local net_strs={[false]="damp_net_sv",[true]="damp_net_cl"};
+local msgc=MsgC;
+local tostr=tostring;
+local send_col=nil;
 
 if SERVER then
 	local net_str=util.AddNetworkString;
@@ -16,24 +19,23 @@ if SERVER then
 	net_str("damp_net_cl");
 end
 
-local send_fns={};
-local rcv_fns={};
+local fns={};
 local vars={};
+local broadcasts={}; -- Only matters for initial.
 
-function damp_net_new(key,send_fn,rcv_fn)
+function damp_net_new(key,fn,is_broadcast)
 	if vars[key] then return; end
 	local id=#vars;
 	vars[id]=key;
 	vars[key]=id;
-	send_fns[id]=send_fn;
-	rcv_fns[id]=rcv_fn;
+	fns[id]=fn;
+	broadcasts[id]=is_broadcast;
 end
 
 local function receive()
 	local id=net_ru32(8);
 	local sid=net_rstr();
-	local fn=rcv_fns[id];
-	if !fn then return; end
+	local fn=fns[id];
 	local key=vars[id];
 	local value=fn();
 	damp_cache_set(sid,key,value);
@@ -41,12 +43,27 @@ end
 net_rcv(net_strs[!DAMP_REALM],receive);
 
 function damp_net_send(pl,to,key,value)
-	if !vars[key]||!send_fns[vars[key]] then return; end
+	if !vars[key] then return; end
 	local sid=pl:SteamID();
+	local id=vars[key];
 	net_start(net_strs[DAMP_REALM]);
-	net_wu32(vars[key],8);
+	net_wu32(id,8);
 	net_wstr(sid);
-	send_fns[vars[key]](value);
+	fns[id](value);
 	net_send(to||ply_get_all());
 	damp_cache_set(sid,key,value);
+end
+--First Load only
+function damp_net_init(pl,data)
+	if !send_col then send_col=damp_color_get("green1"); end
+	local sid=pl:SteamID();
+	local to=nil;
+	-- Send registered vars
+	for i=0,#vars do
+		local k=vars[i];
+		msgc(send_col,DAMP.." | NET | "..sid.." | "..k.." | "..tostr(data[k]).."\n");
+		to=pl;
+		if broadcasts[i] then to=nil; end --Let send() get all players
+		damp_net_send(pl,to,k,data[k]);
+	end
 end

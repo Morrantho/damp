@@ -4,17 +4,14 @@ local colors={};
 
 function damp_color_new(key,r,g,b,a)
 	if colors[key] then return; end
-	colors[key]=#colors+1;
-	colors[colors[key]]=color(r,g,b,a);
-	return colors[colors[colors[key]]];
+	local id=#colors;
+	colors[key]=color(r,g,b,a);
+	colors[id]=colors[key];
+	return colors[key];
 end
 
-function damp_color_get_by_key(key)
-	return colors[colors[key]];
-end
-
-function damp_color_get_by_index(index)
-	return colors[index];
+function damp_color_get(id)
+	return colors[id];
 end
 
 damp_color_new("sv",3,169,244,255);
