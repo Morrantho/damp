@@ -24,8 +24,8 @@ local vars={};
 local broadcasts={}; -- Only matters for initial.
 
 function damp_net_new(key,fn,is_broadcast)
-	if vars[key] then return; end
-	local id=#vars;
+	-- if vars[key] then return; end
+	local id=#vars+1;
 	vars[id]=key;
 	vars[key]=id;
 	fns[id]=fn;
@@ -55,11 +55,11 @@ function damp_net_send(pl,to,key,value)
 end
 --First Load only
 function damp_net_init(pl,data)
-	if !send_col then send_col=damp_color_get("green1"); end
+	if !send_col then send_col=damp_color_get_by_key("green1"); end
 	local sid=pl:SteamID();
 	local to=nil;
 	-- Send registered vars
-	for i=0,#vars do
+	for i=1,#vars do
 		local k=vars[i];
 		msgc(send_col,DAMP.." | NET | "..sid.." | "..k.." | "..tostr(data[k]).."\n");
 		to=pl;

@@ -14,6 +14,7 @@ function damp_player_new(pl)
 	local role=damp_role_get(role_str);
 	local data=
 	{
+		name=pl:Name(),
 		sid=pl:SteamID(),
 		role=role,
 		joined=stamp()
@@ -24,7 +25,6 @@ end
 
 function damp_player_load(pl,data)
 	damp_cache_init(pl:SteamID(),data);
-	-- damp_net_init(pl,data);
 end
 
 function damp_player_init(pl)

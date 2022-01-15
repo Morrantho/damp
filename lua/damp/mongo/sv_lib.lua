@@ -26,11 +26,10 @@ function damp_mongo_bulk(data)
 	local bulk=players:Bulk({});
 	bulk:Insert(data);
 	local res=bulk:Execute();
-	-- print(res);
 end
 
 function damp_mongo_update(filter,data)
-	players:Insert(filter,data);
+	players:Update(filter,data);
 end
 
 function damp_mongo_remove(filter)

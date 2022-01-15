@@ -1,10 +1,12 @@
 local cmd={};
-cmd.aliases={"damp_cl_cache"};
+cmd.aliases={"cache"};
 cmd.role="root";
+cmd.usage="";
+cmd.description="";
 
 function cmd.run(pl,args)
 	local cache=damp_cache_get_all();
-	local col=damp_color_get("cl");
+	local col=damp_color_get_by_key("cl");
 	damp_util_log_table(cache,col);
 end
 
